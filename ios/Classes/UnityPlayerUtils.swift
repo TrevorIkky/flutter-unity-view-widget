@@ -114,12 +114,6 @@ var sharedApplication: UIApplication?
         if self.unityIsInitiallized() && self._isUnityReady {
             completed(controller?.rootView)
         }
-        
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("UnityReady"), object: nil, queue: OperationQueue.main, using: { note in
-            self._isUnityReady = true
-            completed(controller?.rootView)
-        })
-        
         DispatchQueue.main.async {
             if (sharedApplication == nil) {
                 sharedApplication = UIApplication.shared
@@ -132,6 +126,8 @@ var sharedApplication: UIApplication?
             
             self.initUnity()
             unity_warmed_up = true
+            self._isUnityReady = true
+            completed(controller?.rootView)
             self.listenAppState()
         }
         
