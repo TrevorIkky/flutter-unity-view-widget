@@ -9,6 +9,7 @@
 [![Star on GitHub][github-star-badge]][github-star]
 
 [![Gitter](https://badges.gitter.im/flutter-unity/community.svg)](https://gitter.im/flutter-unity/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Discord](https://img.shields.io/badge/Discord-blue?style=for-the-badge)](https://discord.gg/KmMqD7Sv3K)
 
 Flutter unity 3D widget for embedding unity in flutter. Now you can make awesome gamified features of your app in Unity and get it rendered in a Flutter app both in fullscreen and embeddable mode. Works great on `Android, iPad OS, iOS, Web, with Windows` nearing completion. There are now two unity app examples in the unity folder, one with the default scene and another based on Unity AR foundation samples.
 <br />
@@ -18,8 +19,7 @@ Note: Please use OpenGLES3 as Graphics API only for now (Android only).
 
 
 ## Notice
-Need me to respond, tag me [Rex Isaac Raphael](www.github.com/juicycleff).
-
+Need me to respond, tag me [Rex Isaac Raphael](www.github.com/juicycleff). 
 Always use the matching FUW unitypackage for the unity version your are using.
 
 This plugin expects you to atleast know how to use Unity Engine. If you have issues with how unity widget is presented, you can please modify your unity project build settings as you seem fit.
@@ -32,10 +32,17 @@ Windows coming soon.
 ## Installation
 
 First depend on the library by adding this to your packages `pubspec.yaml`:
-
+ -  Flutter 3.0.0
 ```yaml
 dependencies:
-  flutter_unity_widget: ^2022.1.0+4
+  flutter_unity_widget: ^2022.2.0
+```
+
+
+ -  Pre Flutter 3.0.0 (This version will gradually be deprecated)
+```yaml
+dependencies:
+  flutter_unity_widget: ^2022.1.0+7
 ```
 
 Now inside your Dart code you can import it.
@@ -66,8 +73,8 @@ the platform name (Android or iOS). You can click on its icon to expand it.
 
 - An existing Unity project (if there is none, you can [create a new one](https://learn.unity.com/tutorial/create-your-first-unity-project)).
 
-- A [`FlutterUnityPackage.unitypackage`](https://raw.githubusercontent.com/juicycleff/flutter-unity-view-widget/master/unitypackages/fuw-2022.1.0.unitypackage) 
-  file (you can access the Unity packages in the [*scripts*](https://github.com/juicycleff/flutter-unity-view-widget/tree/master/scripts) folder too)
+- A [`FlutterUnityPackage.unitypackage`](https://raw.githubusercontent.com/juicycleff/flutter-unity-view-widget/master/unitypackages/fuw-2022.1.1.unitypackage) 
+  file (you can access the Unity packages in the [*unitypackages*](https://github.com/juicycleff/flutter-unity-view-widget/tree/master/unitypackages) folder too)
   Remeber to always check the match unitypackage for your project.
 
 #### NDK
@@ -116,12 +123,12 @@ That's it! You don't need to tell your Android App in your `app/build.gradle` th
 4. Go to **Assets > Import Package > Custom Package** and select the 
     *FlutterUnityPackage.unitypackage* file. Click on **Import**.
 
-5. After importing, click on **Flutter** and select the **Export Android** option (will export to *android/unityLibrary*) or the **Export iOS** 
+5. After importing, click on **Flutter** and select the **Export Android Debug** or **Export Android Release** option (will export to *android/unityLibrary*) or the **Export iOS Debug** or **Export iOS Release**
 option (will export to *ios/UnityLibrary*).
 
 > Do not use **Flutter > Export _Platform_ plugin** as it was specially added to work with [`flutter_unity_cli`](https://github.com/juicycleff/flutter_unity_cli) for larger projects.
 
-<img src="https://github.com/juicycleff/flutter-unity-view-widget/blob/master/files/Screenshot%202019-03-27%2008.13.08.png?raw=true" width="400" />
+<img src="https://github.com/juicycleff/flutter-unity-view-widget/blob/master/files/Unity_Build_Options.png?raw=true" width="400" />
 
 <details>
  <summary>:information_source: <b>Android</b></summary>
@@ -600,6 +607,72 @@ class _MyAppState extends State<MyApp> {
  - `onUnityUnloaded()` (Unity to flutter listener when unity is unloaded)
  - `onUnitySceneLoaded(String name, int buildIndex, bool isLoaded, bool isValid,)` (Unity to flutter binding and listener when new scene is loaded)
 
+## Flavors
+
+### Recommendation
+
+The easiest way to apply flavors for your app would be: [flutter_flavorizr](https://pub.dev/packages/flutter_flavorizr).
+
+If you use flavors in your app you will notice that especially iOS crashes while running or building your app! 
+Here are the necessary steps for flavored apps:
+
+### Android
+
+No changes needed. Flavors are applied without any additional setups.
+
+### iOS
+
+For your Unity iOS-Build you have to add your flavors to your Unity iOS Configuration.
+
+1. Check your actual `Runner` (your app) configurations. If you have for example the flavors:
+
+- dev
+- prod
+
+Your `Runner` configurations are looking like this:
+
+![iOS Runner Config](https://raw.githubusercontent.com/juicycleff/flutter-unity-view-widget/master/files/iOSRunnerConfig.png)
+
+So you have the flavors:
+
+- `Debug-dev`
+- `Profile-dev`
+- `Release-dev`
+- `Debug-prod`
+- `Profile-prod`
+- `Release-prod`
+
+These flavors needs to be added to your `Unity-IPhone` project.
+
+2. Go into your `Unity-IPhone` project -> PROJECT `Unity-IPhone` -> Info:
+
+![Unity-IPhone](https://raw.githubusercontent.com/juicycleff/flutter-unity-view-widget/master/files/UnityIPhone.png)
+
+Here you can see in the Configurations section only:
+
+- `Release`
+- `ReleaseForProfiling`
+- `ReleaseForRunning`
+- `Debug`
+
+3. Copy `Debug` configuration twice and rename them to `Debug-dev` and the second to `Debug-prod`.
+
+You can do that by selecting `+` and duplicate the configuration like this:
+
+![Duplicate configuration](https://raw.githubusercontent.com/juicycleff/flutter-unity-view-widget/master/files/DuplicateConfig.png)
+
+4. Repeat this with `Release` to `Release-dev` and `Release-prod`.
+
+5. Repeat this with `Release` to `Profile-dev` and `Profile-prod`.
+
+6. Your `Unity-IPhone` configurations should now look like this:
+
+![Unity Configurations](https://raw.githubusercontent.com/juicycleff/flutter-unity-view-widget/master/files/UnityConfigurations.png)
+
+### Web
+
+Flutter on default doesn't support `--flavor` for building web. But you can set your target `main.dart` entrypoint (with `-t main.dart`) while running and building. So if you setup your flavors properly there're also no changes needed for web to apply changes for your Flutter-Unity web App.
+
 ## Known issues
  - Remember to disabled fullscreen in unity player settings to disable unity fullscreen.
  - Unity freezes and crashes on Android, please use OpenGL3 as Graphics API.
@@ -610,6 +683,20 @@ class _MyAppState extends State<MyApp> {
    > commandLineArgs.add("--enable-debugger")
    > commandLineArgs.add("--profiler-report")
    > commandLineArgs.add("--profiler-output-file=" + workingDir + "/build/il2cpp_"+ abi + "_" + configuration + "/il2cpp_conv.traceevents")
+
+### Web GL
+
+> If you develop and ship Flutter with Unity WebGL then you will first notice, that stacked Widgets over your UnityWidget are not tappable!
+
+This is actually a Flutter related Issue (See: https://github.com/flutter/flutter/issues/72273).
+
+To solve this, Flutter-Team already got a solution for this. Use: [PointerInterceptor](https://pub.dev/packages/pointer_interceptor)!
+
+Example usage:
+
+![PointerInterceptor](https://github.com/juicycleff/flutter-unity-view-widget/blob/master/files/PointerInterceptor.png?raw=true)
+
+Note: We already integrated this into our [Examples](/example/lib/screens/) in the `/example` folder.
 
 
 #### Sponsors

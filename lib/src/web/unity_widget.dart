@@ -28,14 +28,10 @@ class UnityWidget extends StatefulWidget {
     this.borderRadius = BorderRadius.zero,
     this.layoutDirection,
     this.hideStatus = false,
-    this.webUrl,
   });
 
   ///Event fires when the unity player is created.
   final UnityCreatedCallback onUnityCreated;
-
-  /// WebGL url source.
-  final String? webUrl;
 
   ///Event fires when the [UnityWidget] gets a message from unity.
   final UnityMessageCallback? onUnityMessage;
@@ -116,16 +112,13 @@ class _UnityWidgetState extends State<UnityWidget> {
     }
 
     return WebUnityWidgetView(
-      unitySrcUrl: widget.webUrl ?? '',
-      onWebViewCreated: (_) {
-        _onPlatformViewCreated();
-      },
+      onWebViewCreated: _onPlatformViewCreated,
       unityOptions: unityOptions,
     );
   }
 
   Future<void> _onPlatformViewCreated() async {
-    final controller = await WebUnityWidgetController(this);
+    final controller = await WebUnityWidgetController.init(0, this);
     _controller = controller;
     widget.onUnityCreated(controller);
 

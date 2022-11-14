@@ -176,6 +176,8 @@ class MethodChannelUnityWidget extends UnityWidgetPlatform {
           gestureRecognizers: gestureRecognizers,
           creationParams: creationParams,
           creationParamsCodec: const StandardMessageCodec(),
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+          layoutDirection: TextDirection.ltr,
         );
       }
 
@@ -193,8 +195,7 @@ class MethodChannelUnityWidget extends UnityWidgetPlatform {
           );
         },
         onCreatePlatformView: (PlatformViewCreationParams params) {
-          final SurfaceAndroidViewController controller =
-              PlatformViewsService.initSurfaceAndroidView(
+          final controller = PlatformViewsService.initExpensiveAndroidView(
             id: params.id,
             viewType: _viewType,
             layoutDirection: TextDirection.ltr,
@@ -202,6 +203,7 @@ class MethodChannelUnityWidget extends UnityWidgetPlatform {
             creationParamsCodec: const StandardMessageCodec(),
             onFocus: () => params.onFocusChanged(true),
           );
+
           controller
             ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
             ..addOnPlatformViewCreatedListener(onPlatformViewCreated)
